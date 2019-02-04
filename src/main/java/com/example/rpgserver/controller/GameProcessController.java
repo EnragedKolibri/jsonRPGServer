@@ -3,6 +3,8 @@ package com.example.rpgserver.controller;
 import com.example.rpgserver.entities.gameField.GameField;
 import com.example.rpgserver.entities.player.Player;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -18,19 +20,23 @@ public class GameProcessController {
     private Integer playerId = 1;
 
     @PostMapping(value = "/connect", produces = "application/json")
-    GameField startGame(Player player)
+    GameField startGame(@RequestBody Player player)
     {
+        System.out.println("Player: " + player);
         player.setId(playerId++);
-        playerStorageMap.put(player.getId(),player);
-        gameField.setPlayer(playerStorageMap.get(player.getId()));
+        player.setStartPosition(0,0);
+        Integer id = player.getId();
+        playerStorageMap.put(id,player);
+        gameField.setPlayer(playerStorageMap.get(id));
         return gameField;
     }
 
     @PostMapping("/mooveUp")
-    GameField mooveUp(Player player)
+    GameField mooveUp(@RequestBody Player player)
     {
-        playerStorageMap.get(player.getId()).setPositionY(playerStorageMap.get(player.getId()).getPositionY()+1);
-        gameField.setPlayer(playerStorageMap.get(player.getId()));
+        Player playerOnEdit = playerStorageMap.get(player.getId());
+        playerOnEdit.setPositionY(playerOnEdit.getPositionY()+1);
+        gameField.setPlayer(playerOnEdit);
         return gameField;
     }
 
