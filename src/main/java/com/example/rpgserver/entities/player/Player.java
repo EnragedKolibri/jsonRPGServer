@@ -5,6 +5,7 @@ import com.example.rpgserver.entities.inventory.Inventory;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,12 +19,9 @@ public class Player extends Entity {
 
     @JsonProperty("name")
     String name;
+    @Ignore
     Integer id;
     //Inventory inventory;
 
-    @Override
-    public void editPosition(int posX, int posY) {
-        this.setPositionX(posX);
-        this.setPositionY(posY);
-    }
+
 }

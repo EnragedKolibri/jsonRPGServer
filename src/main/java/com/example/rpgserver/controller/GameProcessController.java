@@ -2,42 +2,40 @@ package com.example.rpgserver.controller;
 
 import com.example.rpgserver.entities.gameField.GameField;
 import com.example.rpgserver.entities.player.Player;
+import com.example.rpgserver.services.GameFieldService;
+import com.example.rpgserver.services.PlayerStorageService;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
+@Log4j2
 public class GameProcessController {
 
-    private Map<Integer,Player> playerStorageMap = new HashMap<>();
+   @Autowired
+   private PlayerStorageService playerStorageService;
 
-    private GameField gameField = new GameField();
-
-    private Integer playerId = 1;
+   @Autowired
+   private GameFieldService gameFieldService;
 
     @PostMapping(value = "/connect", produces = "application/json")
-    GameField startGame(@RequestBody Player player)
-    {
-        System.out.println("Player: " + player);
-        player.setId(playerId++);
-        player.setStartPosition(0,0);
-        Integer id = player.getId();
-        playerStorageMap.put(id,player);
-        gameField.setPlayer(playerStorageMap.get(id));
-        return gameField;
+    public Player startGame(@RequestBody Player player) {
+        log.info("Request on connection: Player: " + player);
+        player.setId(1);
+       gameFieldService.addPlayer(player);
+       return player;
     }
 
     @PostMapping("/mooveUp")
-    GameField mooveUp(@RequestBody Player player)
+    public GameField mooveUp(@RequestBody Player player)
     {
-        Player playerOnEdit = playerStorageMap.get(player.getId());
-        playerOnEdit.setPositionY(playerOnEdit.getPositionY()+1);
-        gameField.setPlayer(playerOnEdit);
-        return gameField;
+      //  System.out.println("Changed player position Y: " + playerStorageService.getPlayerById(player.getId()) +"Previouse position"+ playerStorageService.getPlayerById(player.getId()).getPosition().getY());
+        Player playerOnEdit = playerStorageService.getPlayerById(player.getId());
+        playerOnEdit.getPosition().setY(playerOnEdit.getPosition().getY()+1);
+        gameFieldService.addPlayer(playerOnEdit);
+        return gameFieldService.getGameField();
     }
 
     /*@PostMapping("/mooveDown")
@@ -58,8 +56,5 @@ public class GameProcessController {
 
     }*/
 
-    void updatePlayerOnGameField(Player player){
-        gameField.setPlayer(playerStorageMap.get(player.getId()));
-    }
 
 }

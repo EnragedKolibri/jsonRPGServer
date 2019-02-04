@@ -1,16 +1,24 @@
 package com.example.rpgserver.entities.gameField;
 
-import com.example.rpgserver.entities.levelMap.Map;
-import com.example.rpgserver.entities.player.Player;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.example.rpgserver.entities.Entity;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Map;
 
-@Data
+@Service
 public class GameField {
-    //Map map;
-    //Entities entities;
-    //HashMap <Integer,Player> playerHashMap;
-    Player player;
+    private Map<Integer, Entity> entities = new HashMap<>();
+
+    public Entity getEntity(Integer key){
+        return entities.get(key);
+    }
+
+    public void addEntity(Entity entity){
+        entities.put(entity.getId(), entity);
+    }
+
+    public void clear(){
+        entities.clear();
+    }
 }
